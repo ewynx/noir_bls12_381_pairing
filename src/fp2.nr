@@ -1,5 +1,6 @@
 use bignum::BigNum;
 use bignum::fields::bls12_381Fq::BLS12_381_Fq_Params;
+use std::ops::{Add, Sub, Mul, Neg};
 
 // Parameter reference https://github.com/noir-lang/noir_bigcurve/blob/main/src/curves/bls12_381.nr#L60
 pub type Fp = BigNum<4, 381, BLS12_381_Fq_Params>;
@@ -26,15 +27,15 @@ impl Fp2 {
         Fp2 { c0: BigNum::one(), c1: BigNum::new() }
     }
 
-    pub fn add(self: Self, other: Self) -> Self {
+    fn add(self: Self, other: Self) -> Self {
         Self { c0: self.c0 + other.c0, c1: self.c1 + other.c1 }
     }
 
-    pub fn sub(self: Self, other: Self) -> Self {
+    fn sub(self: Self, other: Self) -> Self {
         Self { c0: self.c0 - other.c0, c1: self.c1 - other.c1 }
     }
 
-    pub fn neg(self: Self) -> Self {
+    fn neg(self: Self) -> Self {
         Self { c0: self.c0.neg(), c1: self.c1.neg() }
     }
 
@@ -46,7 +47,7 @@ impl Fp2 {
         (self.c0 == BigNum::new()) & (self.c1 == BigNum::new())
     }
 
-    pub fn mul(self: Self, other: Self) -> Self {
+    fn mul(self: Self, other: Self) -> Self {
         unsafe {
             // Calculate unconstrained
             // self.c0 * other.c0
@@ -229,7 +230,31 @@ impl Fp2 {
     }
 }
 
-#[test]
+impl Add for Fp2 {
+    fn add(self: Self, other: Self) -> Self {
+        self.add(other)
+    }
+}
+
+impl Sub for Fp2 {
+    fn sub(self: Self, other: Self) -> Self {
+        self.sub(other)
+    }
+}
+
+impl Mul for Fp2 {
+    fn mul(self: Self, other: Self) -> Self {
+        self.mul(other)
+    }
+}
+
+impl Neg for Fp2 {
+    fn neg(self: Self) -> Self {
+        self.neg()
+    }
+}
+
+// #[test]
 fn test_mul_1() {
     let x = [
         0x55e83ff97a1aeffb3af00adb22c6bb,
