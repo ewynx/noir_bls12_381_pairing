@@ -41,8 +41,8 @@ Note that a good amount of the tests are commented out because they take a fair 
 ## Benchmarks
 
 One pairing:
-- "acir_opcodes": 1.811.140
-- "circuit_size": 2.580.893
+- "acir_opcodes": 2.441.154
+- "circuit_size": 3.210.945
 
 For code snippet:
 ```rust
