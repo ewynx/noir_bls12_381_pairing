@@ -2,9 +2,15 @@
 
 Implementation of pairing over BLS12-381 in Noir. This uses the new [BigNum](https://github.com/noir-lang/noir-bignum) library. 
 
-## Usage
+## Add dependency
 
-This library uses `nargo 0.35.0` and [BigNum](https://github.com/noir-lang/noir-bignum) library version `0.3.7`. 
+This library uses `nargo 0.35.0` and [BigNum](https://github.com/noir-lang/noir-bignum) library version `0.4.2`. 
+
+```toml
+[dependencies]
+noir_bls12_381_pairing = { tag = "v0.1", git = "https://github.com/ewynx/noir_bls12_381_pairing" }
+```
+## Usage
 
 To do a pairing define the 2 inputs of types `G1Affine` and `G2Affine` and apply the pairing. Example:
 ```rust
@@ -42,7 +48,7 @@ Note that a good amount of the tests are commented out because they take a fair 
 
 One pairing:
 - "acir_opcodes": 2.441.154
-- "circuit_size": 3.210.945
+- "circuit_size": 3.210.964
 
 For code snippet:
 ```rust
@@ -56,6 +62,7 @@ fn main(p: G1Affine, q: G2Affine) {
 - BLS12_381 Elliptic Curve Pairing and Signature Verification Library by @onurinanc: [repo](https://github.com/onurinanc/noir-bls-signature)
 - Noir BigCurve library: [repo](https://github.com/noir-lang/noir_bigcurve)
 
+This repo was forked and more curves are being added in [this repo](https://github.com/iAmMichaelConnor/noir_bls12_381_pairing) by @iAmMichaelConnor. 
 
 
 
