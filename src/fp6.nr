@@ -1,5 +1,5 @@
 use crate::fp2::Fp2;
-use bignum::BigNum;
+use bignum::{BigNum, BigNumTrait};
 use std::ops::{Add, Sub, Mul, Neg};
 
 // https://github.com/zkcrypto/bls12_381/blob/main/src/fp6.rs
@@ -118,6 +118,7 @@ impl Fp6 {
     // for inputs `a = (a0, a1, a2)` and `b = (b0, b1, b2)`,
     // return multiplication a*b
     fn mul_interleaved(a: Self, b: Self) -> Self {
+      // Safety: validated using `evaluate_quadratic_expression`
         unsafe {
             // Unconstrained calculations first
             //   result_c0_0 = a00 * b00 - a01 * b01 + a10 * b20 - a11 * b21 + a20 * b10 - a21 * b11
@@ -380,6 +381,7 @@ impl Fp6 {
 
     // Returns inverse and errors if there is no inverse
     pub fn invert(self: Self) -> Self {
+        // Safety: validated using `evaluate_quadratic_expression`
         unsafe {
             let mut c0 = (self.c1 * self.c2).mul_by_nonresidue();
             c0 = self.c0.square() - c0;

@@ -1,6 +1,6 @@
-use bignum::BigNum;
+use bignum::{BigNum, BigNumTrait};
 use bignum::fields::bls12_381Fq::BLS12_381_Fq_Params;
-use std::ops::{Add, Sub, Mul, Neg};
+use std::ops::{Add, Mul, Neg, Sub};
 
 // Parameter reference https://github.com/noir-lang/noir_bigcurve/blob/main/src/curves/bls12_381.nr#L60
 pub type Fp = BigNum<4, 381, BLS12_381_Fq_Params>;
@@ -15,16 +15,16 @@ pub struct Fp2 {
 }
 
 impl Fp2 {
-    pub fn new(c0: [Field; 4], c1: [Field; 4]) -> Self {
+    pub fn new(c0: [u128; 4], c1: [u128; 4]) -> Self {
         Fp2 { c0: BigNum { limbs: c0 }, c1: BigNum { limbs: c1 } }
     }
 
     pub fn zero() -> Fp2 {
-        Fp2 { c0: BigNum::new(), c1: BigNum::new() }
+        Fp2 { c0: BigNum::zero(), c1: BigNum::zero() }
     }
 
     pub fn one() -> Fp2 {
-        Fp2 { c0: BigNum::one(), c1: BigNum::new() }
+        Fp2 { c0: BigNum::one(), c1: BigNum::zero() }
     }
 
     fn add(self: Self, other: Self) -> Self {
@@ -44,10 +44,11 @@ impl Fp2 {
     }
 
     pub fn is_zero(self: Self) -> bool {
-        (self.c0 == BigNum::new()) & (self.c1 == BigNum::new())
+        (self.c0 == BigNum::zero()) & (self.c1 == BigNum::zero())
     }
 
     fn mul(self: Self, other: Self) -> Self {
+        // Safety: validated using `evaluate_quadratic_expression`
         unsafe {
             // Calculate unconstrained
             // self.c0 * other.c0
@@ -90,10 +91,10 @@ impl Fp2 {
             // c1 = (self.c0 + self.c1) * (other.c0 + other.c1) - self.c0 * other.c0 - self.c1 * other.c1
             // (adding zeroes for compilation)
             let lhs_terms1 =
-                [[self.c0, self.c1], [self.c0, BigNum::new()], [self.c1, BigNum::new()]];
+                [[self.c0, self.c1], [self.c0, BigNum::zero()], [self.c1, BigNum::zero()]];
             let lhs_flags1 = [[false, false], [true, false], [true, false]];
             let rhs_terms1 =
-                [[other.c0, other.c1], [other.c0, BigNum::new()], [other.c1, BigNum::new()]];
+                [[other.c0, other.c1], [other.c0, BigNum::zero()], [other.c1, BigNum::zero()]];
             let rhs_flags1 = [[false, false], [false, false], [false, false]];
             let res1 = [c1];
             let res_flag1 = [true];
@@ -113,6 +114,7 @@ impl Fp2 {
     }
 
     pub fn square(self: Self) -> Self {
+        // Safety: validated using `evaluate_quadratic_expression`
         unsafe {
             // a = c0 + c1
             // b = c0 - c1
@@ -145,7 +147,7 @@ impl Fp2 {
             // Constrain res_c1
             let lhs_terms1 = [[self.c0, self.c0]];
             let lhs_flags1 = [[false, false]];
-            let rhs_terms1 = [[self.c1, BigNum::new()]];
+            let rhs_terms1 = [[self.c1, BigNum::zero()]];
             let rhs_flags1 = [[false, false]];
             let res1 = [res_c1];
             let res_flag1 = [true];
@@ -164,6 +166,7 @@ impl Fp2 {
 
     // Returns inverse and errors if there is no inverse
     pub fn invert(self: Self) -> Self {
+        // Safety: validated using `evaluate_quadratic_expression`
         unsafe {
             // (self.c0 * self.c0 + self.c1 * self.c1).invert()
             let c0_square = self.c0.__mul(self.c0);
@@ -275,8 +278,8 @@ fn test_mul_1() {
 
     // test multiplication by 0
     let mult_by_0 = test_val.mul(zero);
-    assert(mult_by_0.c0 == BigNum::new());
-    assert(mult_by_0.c1 == BigNum::new());
+    assert(mult_by_0.c0 == BigNum::zero());
+    assert(mult_by_0.c1 == BigNum::zero());
 }
 
 #[test]

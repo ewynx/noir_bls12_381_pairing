@@ -1,7 +1,8 @@
-use crate::fp2::{Fp2, Fp};
-use crate::fp6::Fp6;
 use crate::fp12::Fp12;
-use bignum::BigNum;
+use crate::fp2::{Fp, Fp2};
+use crate::fp6::Fp6;
+use bignum::{BigNum, BigNumTrait};
+use std::ops::Neg;
 
 // Ref: https://github.com/zkcrypto/bls12_381/blob/main/src/pairings.rs
 

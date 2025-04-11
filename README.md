@@ -4,11 +4,11 @@ Implementation of pairing over BLS12-381 in Noir. This uses the new [BigNum](htt
 
 ## Add dependency
 
-This library uses `nargo 0.35.0` and [BigNum](https://github.com/noir-lang/noir-bignum) library version `0.4.2`. 
+This library uses [BigNum](https://github.com/noir-lang/noir-bignum) library version `v0.6.1`. 
 
 ```toml
 [dependencies]
-noir_bls12_381_pairing = { tag = "v0.1", git = "https://github.com/ewynx/noir_bls12_381_pairing" }
+noir_bls12_381_pairing = { tag = "v0.2", git = "https://github.com/ewynx/noir_bls12_381_pairing" }
 ```
 ## Usage
 
@@ -30,7 +30,7 @@ The Noir implementation passes pairing & bilinearity tests obtained from the zkc
 
 The BLS12-381 Fq field parameters comes from [BigNum](https://github.com/noir-lang/noir-bignum) library and the type `BLS12_381Fq` in `Fp2` follows the [definition](https://github.com/noir-lang/noir_bigcurve/blob/main/src/curves/bls12_381.nr#L60) in the BigCurve library:
 ```rust
-pub type BLS12_381Fq = BigNum<4, BLS12_381_Fq_Params>;
+pub type Fp = BigNum<4, BLS12_381_Fq_Params>;
 ```
 
 We define it here to not have to import the full BigCurve library. 
@@ -46,9 +46,15 @@ Note that a good amount of the tests are commented out because they take a fair 
 
 ## Benchmarks
 
+`nargo 0.35.0` and BigNum `0.4.2`:
 One pairing:
 - "acir_opcodes": 2.441.154
 - "circuit_size": 3.210.964
+
+`nargo 1.0.0-beta.3` and BigNum `0.6.1`:
+One pairing:
+- "acir_opcodes": 1.876.717
+- "circuit_size": 5.403.322
 
 For code snippet:
 ```rust
